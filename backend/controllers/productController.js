@@ -25,7 +25,23 @@ class ProductController {
 		}
 	}
 
-	async getAll(req, res) {}
+	async getAll(req, res) {
+		const { brandId, typeId } = req.query
+		let products
+		if (!brandId && !typeId) {
+			products = await Product.findAll()
+		}
+		if (brandId && !typeId) {
+			products = await Product.findAll({ where: { brandId } })
+		}
+		if (!brandId && typeId) {
+			products = await Product.findAll({ where: { typeId } })
+		}
+		if (brandId && typeId) {
+			products = await Product.findAll({ where: { brandId, typeId } })
+		}
+		return res.json(products)
+	}
 
 	async getOne(req, res) {}
 }
