@@ -70,7 +70,14 @@ class ProductController {
 		return res.json(products)
 	}
 
-	async getOne(req, res) {}
+	async getOne(req, res) {
+		const { id } = req.params
+		const product = await Product.findOne({
+			where: { id },
+			include: [{ model: ProductInfo, as: 'info' }],
+		})
+		return res.json(product)
+	}
 }
 
 module.exports = new ProductController()
