@@ -33,16 +33,24 @@ class ProductController {
 
 		let products
 		if (!brandId && !typeId) {
-			products = await Product.findAll({ limit, offset })
+			products = await Product.findAndCountAll({ limit, offset })
 		}
 		if (brandId && !typeId) {
-			products = await Product.findAll({ where: { brandId }, limit, offset })
+			products = await Product.findAndCountAll({
+				where: { brandId },
+				limit,
+				offset,
+			})
 		}
 		if (!brandId && typeId) {
-			products = await Product.findAll({ where: { typeId }, limit, offset })
+			products = await Product.findAndCountAll({
+				where: { typeId },
+				limit,
+				offset,
+			})
 		}
 		if (brandId && typeId) {
-			products = await Product.findAll({
+			products = await Product.findAndCountAll({
 				where: { brandId, typeId },
 				limit,
 				offset,
