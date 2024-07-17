@@ -26,15 +26,21 @@ class UserController {
 		return res.json({ token })
 	}
 
-	async login(req, res) {}
-
-	async check(req, res, next) {
-		const { id } = req.query
-		if (!id) {
-			return next(ApiError.badRequest('ID not specified'))
+	async login(req, res, next) {
+		const { email, password } = req.body
+		const user = await User.findOne({ where: { email } })
+		if (!user) {
+			return next(ApiError.internal('No user with this name'))
 		}
-		res.json(id)
+		let comparePassword = bcrypt.compareSync(password, user.password)
+		if (!comparePassword) {
+			return next(ApiError.internal('Password is incorrect'))
+		}
+		const token = generateJwt(user.id, user.email, user.role)
+		return res.json({ token })
 	}
+
+	async check(req, res, next) {}
 }
 
 module.exports = new UserController()
