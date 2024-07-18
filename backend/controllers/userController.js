@@ -40,7 +40,9 @@ class UserController {
 		return res.json({ token })
 	}
 
-	async check(req, res, next) {}
+	async check(req, res, next) {
+		res.json({ message: 'All work' })
+	}
 }
 
 module.exports = new UserController()
