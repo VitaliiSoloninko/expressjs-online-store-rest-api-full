@@ -10,7 +10,6 @@ class ProductController {
 			const { img } = req.files
 			let fileName = uuid.v4() + '.jpg'
 			img.mv(path.resolve(__dirname, '..', 'static', fileName))
-
 			const product = await Product.create({
 				name,
 				price,
@@ -18,7 +17,6 @@ class ProductController {
 				typeId,
 				img: fileName,
 			})
-
 			if (info) {
 				info = JSON.parse(info)
 				info.forEach(i => {
@@ -29,7 +27,6 @@ class ProductController {
 					})
 				})
 			}
-
 			return res.json(product)
 		} catch (e) {
 			next(ApiError.badRequest(e.message))
@@ -41,7 +38,6 @@ class ProductController {
 		page = page || 1
 		limit = limit || 9
 		let offset = page * limit - limit
-
 		let products
 		if (!brandId && !typeId) {
 			products = await Product.findAndCountAll({ limit, offset })
@@ -79,9 +75,32 @@ class ProductController {
 		return res.json(product)
 	}
 
-	async update(req, res) {}
+	async update(req, res) {
+		const product = req.body
+		if (!product.id) {
+			res.status(400).json({ message: 'No ID' })
+		}
+		const updatedProduct = await Product.update(
+			{
+				name,
+				price,
+				brandId,
+				typeId,
+				img: fileName,
+			},
+			{ new: true }
+		)
+		return res.json(updatedProduct)
+	}
 
-	async delete(req, res) {}
+	async delete(req, res) {
+		const { id } = req.params
+		const product = await Product.destroy({
+			where: { id },
+			include: [{ model: ProductInfo, as: 'info' }],
+		})
+		return res.json(product)
+	}
 }
 
 module.exports = new ProductController()
