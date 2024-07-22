@@ -29,10 +29,9 @@ class BrandController {
 	}
 
 	async delete(req, res) {
-		try {
-		} catch (e) {
-			res.status(500).json(e)
-		}
+		const { id } = req.params
+		const brand = await Brand.destroy(id)
+		return res.json(brand)
 	}
 }
 
