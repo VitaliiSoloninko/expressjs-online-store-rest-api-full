@@ -4,13 +4,9 @@ const { where } = require('sequelize')
 
 class TypeController {
 	async create(req, res) {
-		try {
-			const { name } = req.body
-			const type = await Type.create({ name })
-			return res.json(type)
-		} catch (e) {
-			res.status(500).json(e)
-		}
+		const { name } = req.body
+		const type = await Type.create({ name })
+		return res.json(type)
 	}
 
 	async getAll(req, res) {
@@ -38,18 +34,30 @@ class TypeController {
 
 	async update(req, res) {
 		try {
-			const type = req.body
-			const updatedType = await Type.update({ id }, { where: { name } })
-			return res.json(updatedType)
+			const { id } = req.params
+			const updatedType = await Type.update(req.body, { where: { id } })
+			if (updatedType == 1) {
+				res.send({
+					message: 'Type updated',
+				})
+			} else {
+				res.send({
+					message: `Cannot update Type with id=${id}`,
+				})
+			}
 		} catch (e) {
 			res.status(500).json(e)
 		}
 	}
 
 	async delete(req, res) {
-		const { id } = req.params
-		const type = await Type.destroy({ where: { id } })
-		return res.json(type)
+		try {
+			const { id } = req.params
+			const type = await Type.destroy({ where: { id } })
+			return res.json(type)
+		} catch (e) {
+			res.status(500).json(e)
+		}
 	}
 }
 
