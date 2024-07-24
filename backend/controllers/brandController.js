@@ -21,17 +21,31 @@ class BrandController {
 	}
 
 	async update(req, res) {
-		const brand = req.body
-		const updatedBrand = await Brand.update(brand.id, brand, {
-			new: true,
-		})
-		return res.json(updatedBrand)
+		const { id } = req.params
+		const updatedBrand = await Brand.update(req.body, { where: { id } })
+		if (updatedBrand == 1) {
+			res.send({
+				message: `BRAND with ID=${id} updated`,
+			})
+		} else {
+			res.send({
+				message: `No BRAND with ID=${id}`,
+			})
+		}
 	}
 
 	async delete(req, res) {
 		const { id } = req.params
-		const brand = await Brand.destroy(id)
-		return res.json(brand)
+		const deletedBrand = await Brand.destroy({ where: { id } })
+		if (deletedBrand == 1) {
+			res.send({
+				message: `BRAND with ID=${id} deleted`,
+			})
+		} else {
+			res.send({
+				message: `No BRAND with ID=${id}`,
+			})
+		}
 	}
 }
 
