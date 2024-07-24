@@ -76,21 +76,17 @@ class ProductController {
 	}
 
 	async update(req, res) {
-		const product = req.body
-		if (!product.id) {
-			res.status(400).json({ message: 'No ID' })
+		const { id } = req.params
+		const updatedProduct = await Brand.update(req.body, { where: { id } })
+		if (updatedBrand == 1) {
+			res.send({
+				message: `PRODUCT with ID=${id} updated`,
+			})
+		} else {
+			res.send({
+				message: `No PRODUCT with ID=${id}`,
+			})
 		}
-		const updatedProduct = await Product.update(
-			{
-				name,
-				price,
-				brandId,
-				typeId,
-				img: fileName,
-			},
-			{ new: true }
-		)
-		return res.json(updatedProduct)
 	}
 
 	async delete(req, res) {
